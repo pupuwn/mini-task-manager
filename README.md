@@ -65,3 +65,40 @@ AI was used to scaffold boilerplate (tsconfig, package.json), suggest layer stru
 - Add task filtering, searching, and sorting by status or priority.
 - Add pagination for audit logs to support long-running tasks.
 - Write extensive unit tests for the service layer (especially testing the edges of the status transition logic).
+
+
+## AI Usage & Validation
+
+I used AI as an assistant in completing this assignment. Here is a breakdown of its usage:
+
+### Sections Assisted by AI
+
+**Setup & boilerplate** — AI was used to initialize tsconfig.json, package.json, the folder structure, scaffold Express middleware, and initial React component templates. This section involves conventional and repetitive tasks.
+
+**Initial type definitions** — AI suggested the initial structure for the `Task` and `AuditLog` interfaces, which I then modified: adding the `taskTitle` field as a snapshot in the audit log (so the log remains readable even if the task is deleted), and defining the `message` field as a human-readable string that meets the format specified in the spec.
+
+### Sections I Decided on Myself
+
+- **Business logic**: the `isValidTransition()` function, idempotency check, and the sequence of operations in `updateStatus()` (check existence → check idempotency → validate transition → update task → create log). This sequence is critical, and I wrote and understood it myself.
+- **All architectural decisions**: in-memory vs. database, layered structure, hard delete vs. soft delete, duplicated types vs. shared package.
+- **All documentation**: This README, assumptions, trade-offs, and reflective answers are my own thoughts.
+
+
+### How I validate AI output
+
+1. **Compile check**: `npm run build` must complete without errors — no `any` types hiding issues.
+
+2. **Manual testing of critical business rules**:
+   - PUT the same status twice → no new audit logs are created (idempotency ✓)
+   - PUT skipping a transition (to_do → in_progress) → 400 response (✓)
+   - PUT reversing a transition (in_progress → pending) → 400 response (✓)
+   - PUT when status is already done → rejected (✓)
+   - GET audit logs → entries appear in chronological ascending order (✓)
+
+3. **Read critical functions line by line**: specifically `taskService.ts:updateStatus()` — I manually traced the sequence of operations before testing.
+
+4. **End-to-end UI testing**: run the complete happy path from the browser, including switching actors and verifying that the audit log displays the correct actor.
+
+### Conclusion
+
+AI speeds up the tedious parts. Domain decisions, validation, and understanding the generated code are entirely my responsibility — and I’m ready to explain every line if asked.

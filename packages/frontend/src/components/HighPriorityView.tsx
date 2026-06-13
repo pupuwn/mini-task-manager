@@ -32,7 +32,7 @@ export function HighPriorityView({ tasks, onStatusChange, onViewLogs, onDelete, 
       <div className="flex items-end justify-between">
         <div>
           <h2 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">High Priority Tasks</h2>
-          <p className="text-on-surface-variant text-body-sm mt-1">Manage all your high priority tasks.</p>
+          <p className="text-on-surface-variant text-body-md mt-1">Manage all your high priority tasks.</p>
         </div>
         <div className="flex items-center space-x-2 text-sm text-on-surface-variant bg-surface border border-outline-variant px-3 py-1.5 rounded-lg shadow-sm">
           <span className="material-symbols-outlined text-[18px]">event</span>

@@ -44,7 +44,7 @@ export function TaskListView({
       <div className="flex items-end justify-between">
         <div>
           <h2 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Workload Overview</h2>
-          <p className="text-on-surface-variant text-body-sm mt-1">Manage and track high-priority system operations.</p>
+          <p className="text-on-surface-variant text-body-md mt-1">Manage and track high-priority system operations.</p>
         </div>
         <span className="px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-[12px] font-bold">{activeCount} Active</span>
       </div>

@@ -98,15 +98,18 @@ export function Sidebar({ currentView, onViewChange, actor, onActorChange }: Sid
             <p className="text-[10px] text-on-surface-variant truncate uppercase tracking-widest">Admin Access</p>
           </div>
         </div>
-        <select
-          className="w-full text-[12px] bg-surface-container-low border border-outline-variant rounded p-1 text-on-surface"
-          value={actor}
-          onChange={(e) => onActorChange(e.target.value)}
-        >
-          {PREDEFINED_ACTORS.map((a) => (
-            <option key={a} value={a}>{a}</option>
-          ))}
-        </select>
+        <div className="relative mt-4">
+          <select
+            className="w-full appearance-none px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-md font-body-sm text-body-sm focus:ring-2 focus:ring-primary focus:ring-offset-1 outline-none transition-all pr-10"
+            value={actor}
+            onChange={(e) => onActorChange(e.target.value)}
+          >
+            {PREDEFINED_ACTORS.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
+          <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[18px]">expand_more</span>
+        </div>
       </div>
     </aside>
   );
