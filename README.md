@@ -98,7 +98,3 @@ I used AI as an assistant in completing this assignment. Here is a breakdown of 
 3. **Read critical functions line by line**: specifically `taskService.ts:updateStatus()` — I manually traced the sequence of operations before testing.
 
 4. **End-to-end UI testing**: run the complete happy path from the browser, including switching actors and verifying that the audit log displays the correct actor.
-
-### Conclusion
-
-AI speeds up the tedious parts. Domain decisions, validation, and understanding the generated code are entirely my responsibility — and I’m ready to explain every line if asked.
