@@ -35,22 +35,22 @@ The frontend, built with React and Vite, communicates with the backend via RESTf
 - **No authentication**: Actor selection is simulated via a predefined dropdown (`john.doe`, `jane.smith`, `alice.dev`, `bob.pm`, `charlie.qa`).
 - **In-memory storage**: Chosen for simplicity and ease of setup for a take-home assignment. Data resets whenever the server restarts.
 - **Timezones**: UTC timestamps are used throughout the system for consistency.
-- **Status Workflow**: `"done"` is a terminal status — no further status changes are allowed once a task reaches this state.
+- **Status Workflow**: `"done"` is a terminal status, no further status changes are allowed once a task reaches this state.
 - **Cascading Deletes**: Deleting a task permanently removes all of its associated audit logs. This is a known limitation for the sake of simplicity.
 
 ## Trade-offs
 
-- **In-memory vs persistent storage**: We chose simplicity and zero-configuration over durability for the MVP scope. A real-world application would use a relational database like PostgreSQL.
+- **In-memory vs persistent storage**: I chose simplicity and zero-configuration over durability for the MVP scope. A real-world application would use a relational database like PostgreSQL.
 - **Duplicated types between frontend and backend**: A pragmatic choice over introducing monorepo tooling (like Turborepo or npm workspaces with shared packages) to keep the repository extremely simple for a 3-5 hour task.
 - **No frontend status validation**: The application trusts the backend to enforce the status workflow. The frontend optimistically shows the next valid status based on sequence logic but relies on the backend to reject invalid transitions.
 
 ## Reflective Questions
 
 **1. How do you ensure audit logs are not modified?**
-Audit logs are stored in a separate append-only Map/Array. The repository layer only exposes an `addLog()` method — no `updateLog()` or `deleteLog()` methods exist. The service layer never calls any mutation on existing logs.
+Audit logs are stored in a separate append-only Map/Array. The repository layer only exposes an `addLog()` method, no `updateLog()` or `deleteLog()` methods exist. The service layer never calls any mutation on existing logs.
 
 **2. Which part of this solution is most at risk under high user load?**
-The in-memory store is not thread-safe and would lose data on crashes. The biggest risk in a multi-user scenario is race conditions on the status update — two simultaneous PUT requests could both read the same "current status" and both succeed, creating duplicate audit logs. Solution: database transactions or optimistic locking.
+The in-memory store is not thread-safe and would lose data on crashes. The biggest risk in a multi-user scenario is race conditions on the status update, two simultaneous PUT requests could both read the same "current status" and both succeed, creating duplicate audit logs. Solution: database transactions or optimistic locking.
 
 **3. If this grew into a large system, what would you refactor first and why?**
 Replace the in-memory storage with a proper database (e.g., PostgreSQL). The repository interface is already abstracted, making this a clean swap. Second: extract the audit log to a dedicated service with its own queue/store, so it can scale independently and handle massive write volumes without blocking core task updates.
@@ -73,9 +73,9 @@ I used AI as an assistant in completing this assignment. Here is a breakdown of 
 
 ### Sections Assisted by AI
 
-**Setup & boilerplate** — AI was used to initialize tsconfig.json, package.json, the folder structure, scaffold Express middleware, and initial React component templates. This section involves conventional and repetitive tasks.
+**Setup & boilerplate** AI was used to initialize tsconfig.json, package.json, the folder structure, scaffold Express middleware, and initial React component templates. This section involves conventional and repetitive tasks.
 
-**Initial type definitions** — AI suggested the initial structure for the `Task` and `AuditLog` interfaces, which I then modified: adding the `taskTitle` field as a snapshot in the audit log (so the log remains readable even if the task is deleted), and defining the `message` field as a human-readable string that meets the format specified in the spec.
+**Initial type definitions** AI suggested the initial structure for the `Task` and `AuditLog` interfaces, which I then modified: adding the `taskTitle` field as a snapshot in the audit log (so the log remains readable even if the task is deleted), and defining the `message` field as a human-readable string that meets the format specified in the spec.
 
 ### Sections I Decided on Myself
 
@@ -86,7 +86,7 @@ I used AI as an assistant in completing this assignment. Here is a breakdown of 
 
 ### How I validate AI output
 
-1. **Compile check**: `npm run build` must complete without errors — no `any` types hiding issues.
+1. **Compile check**: `npm run build` must complete without errors, no `any` types hiding issues.
 
 2. **Manual testing of critical business rules**:
    - PUT the same status twice → no new audit logs are created (idempotency ✓)
@@ -95,6 +95,6 @@ I used AI as an assistant in completing this assignment. Here is a breakdown of 
    - PUT when status is already done → rejected (✓)
    - GET audit logs → entries appear in chronological ascending order (✓)
 
-3. **Read critical functions line by line**: specifically `taskService.ts:updateStatus()` — I manually traced the sequence of operations before testing.
+3. **Read critical functions line by line**: specifically `taskService.ts:updateStatus()` I manually traced the sequence of operations before testing.
 
 4. **End-to-end UI testing**: run the complete happy path from the browser, including switching actors and verifying that the audit log displays the correct actor.
